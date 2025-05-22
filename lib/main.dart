@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whats_app/view/login_screens/language_choose.dart';
+import 'package:whats_app/view/login_screens/language_selection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
@@ -14,7 +14,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const ChooseLang(),
+      debugShowCheckedModeBanner: false,
+      home: const LanguageSelection(),
     );
   }
 }
