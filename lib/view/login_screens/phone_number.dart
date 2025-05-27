@@ -20,7 +20,7 @@ class _PhoneNumberState extends ConsumerState<PhoneNumber> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     setState(() {
       countryList = ref.watch(countryProvider);
       _selectedItem = countryList[0];
@@ -85,28 +85,32 @@ class _PhoneNumberState extends ConsumerState<PhoneNumber> {
               ),
             ],
           ),
-          Row(
-            children: [
-              Text(_selectedItem['dialingCode']),
-              VerticalDivider(
-                color: Colors.grey,
-                thickness: 1,
-                width: 20,
-              ),
-              Expanded(
-                child: TextField(
-                  controller: _controller,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                  ),
-                  onChanged: (text) {
-                    setState(() {
-                      _displayText = text;
-                    });
-                  },
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                Text(_selectedItem['dialingCode']),
+                VerticalDivider(
+                  color: Colors.grey,
+                  thickness: 1,
+                  width: 20,
                 ),
-              ),
-            ],
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'phone number',
+                        hintStyle: TextStyle(color: Colors.grey)),
+                    onChanged: (text) {
+                      setState(() {
+                        _displayText = text;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
           Divider(),
         ],
