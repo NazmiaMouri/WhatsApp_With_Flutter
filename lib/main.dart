@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:whats_app/constants/screen_size.dart';
 import 'package:whats_app/view/home_screens/home.dart';
+import 'package:whats_app/view/individual_chat/conversation.dart';
 import 'package:whats_app/view/login_screens/front_page.dart';
 import 'package:whats_app/view/login_screens/language_selection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,9 +17,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    ScreenSize.width = MediaQuery.of(context).size.width;
+    ScreenSize.height = MediaQuery.of(context).size.height;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const Home(),
+      home: const Conversation(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => FrontPage(),
+        '/language': (context) => LanguageSelection(),
+        '/contact': (context) => PhoneNumber(),
+        '/home': (context) => Home(),
+        '/individualChat': (context) => Conversation(),
+      },
     );
   }
 }

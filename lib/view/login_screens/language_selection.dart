@@ -16,7 +16,7 @@ class _LanguageSelectionState extends ConsumerState<LanguageSelection> {
   @override
   Widget build(BuildContext context) {
     // Getting screen width and height
-    final screenWidth = MediaQuery.of(context).size.width;
+
     final screenHeight = MediaQuery.of(context).size.height;
     final double paddingTop = screenHeight / 8;
     final textGape = paddingTop + (screenHeight / 2.5 / 2);
