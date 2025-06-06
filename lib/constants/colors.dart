@@ -6,5 +6,7 @@ class AppColors {
   static const Color blue = Color(0xFF007AFF); // blue
   static const Color appbarBackground = Color(0xFFF6F6F6); // light grey
   static const Color textDark = Color(0xFF212121); // dark text
-  static const Color textLight = Color(0xFFFFFFFF); // white text
+  static const Color textLight = Color(0xFFB0C69E);
+  static const Color myMessageBackground =
+      Color(0xFFDCF7C5); // grey text// white text
 }

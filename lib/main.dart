@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whats_app/constants/screen_size.dart';
 import 'package:whats_app/view/home_screens/home.dart';
 import 'package:whats_app/view/individual_chat/conversation.dart';
+import 'package:whats_app/view/individual_chat/my_message.dart';
 import 'package:whats_app/view/login_screens/front_page.dart';
 import 'package:whats_app/view/login_screens/language_selection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,14 +24,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const Conversation(),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => FrontPage(),
-        '/language': (context) => LanguageSelection(),
-        '/contact': (context) => PhoneNumber(),
-        '/home': (context) => Home(),
-        '/individualChat': (context) => Conversation(),
-      },
+      // initialRoute: '/home',
+      // routes: {
+      //   '/startup': (context) => FrontPage(),
+      //   '/language': (context) => LanguageSelection(),
+      //   '/contact': (context) => PhoneNumber(),
+      //   '/home': (context) => Home(),
+      //   '/individualChat': (context) => Conversation(),
+      // },
     );
   }
 }

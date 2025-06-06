@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:whats_app/constants/colors.dart';
 import 'package:whats_app/constants/screen_size.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:whats_app/models/message_model.dart';
+import 'package:whats_app/view/individual_chat/my_message.dart';
 
 class Conversation extends StatefulWidget {
   const Conversation({super.key});
@@ -12,6 +15,46 @@ class Conversation extends StatefulWidget {
 }
 
 class _ConversationState extends State<Conversation> {
+  late IO.Socket socket;
+  List<Message> messages = [];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void socketConnection() {
+    socket = IO.io("http://192.168.0.218:5000", <String, dynamic>{
+      "transports": ["websocket"],
+      "autoConnect": false,
+    });
+    socket.connect();
+    socket.emit("signin");
+    socket.onConnect((data) {
+      socket.on("message", (msg) {
+        setMessage("desitation", msg["message"]);
+      });
+    });
+  }
+
+  void sendMessage(String message, int sourceId, int targetId) {
+    // setMessage("source", message);
+    socket.emit("message",
+        {"message": message, "sourceId": sourceId, "targetId": targetId});
+  }
+
+  void setMessage(String type, String message) {
+    Message messageModel = Message(
+        type: type,
+        msg: message,
+        time: DateTime.now().toString().substring(10, 16));
+    print(messages);
+
+    setState(() {
+      messages.add(messageModel);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,6 +108,7 @@ class _ConversationState extends State<Conversation> {
             fit: BoxFit.cover,
           ),
         ),
+        MyMessage()
       ]),
       persistentFooterButtons: [
         Row(

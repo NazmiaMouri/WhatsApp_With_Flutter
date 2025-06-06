@@ -74,14 +74,12 @@ class _HomeState extends ConsumerState<Home> with TickerProviderStateMixin {
               ),
               text: 'Calls'),
           Tab(
-              icon: SvgPicture.asset(
-                'assets/icons/Icone=Camera outline.svg',
-                semanticsLabel: 'Logo',
-                height: 30.0,
-                width: 30.0,
+              icon: Icon(
+                Icons.contacts,
+                size: 30.0,
                 color: _getIconColor(2),
               ),
-              text: 'Camera'),
+              text: 'Contacts'),
           Tab(
               icon: SvgPicture.asset(
                 'assets/icons/Icone=Chats outline.svg',
