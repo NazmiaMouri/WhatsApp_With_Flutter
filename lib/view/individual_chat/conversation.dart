@@ -59,8 +59,13 @@ class _ConversationState extends State<Conversation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.keyboard_backspace)),
         titleSpacing: 0,
-        leading: Icon(Icons.chevron_left),
+        centerTitle: false,
         title: ListTile(
           dense: true,
           leading: CircleAvatar(
@@ -73,7 +78,6 @@ class _ConversationState extends State<Conversation> {
             'popop',
             style: TextStyle(fontSize: ScreenSize.width * 0.05),
           ),
-          subtitle: Text('tap here for contact info'),
           isThreeLine: false,
           onTap: () {
             // Handle tap event
@@ -97,19 +101,35 @@ class _ConversationState extends State<Conversation> {
               size: 30,
               color: AppColors.blue,
             )),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: InkWell(
+                child: Icon(
+              Icons.more_vert,
+              size: 30,
+              color: AppColors.blue,
+            )),
           )
         ],
       ),
-      body: Stack(children: [
-        // Background Image
-        Positioned.fill(
-          child: Image.asset(
-            'assets/images/bg.png',
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg.png'),
             fit: BoxFit.cover,
           ),
         ),
-        MyMessage()
-      ]),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: MyMessage(),
+            ),
+          ),
+        ),
+      ),
       persistentFooterButtons: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
