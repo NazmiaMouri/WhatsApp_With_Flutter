@@ -16,11 +16,31 @@ class Conversation extends StatefulWidget {
 
 class _ConversationState extends State<Conversation> {
   late IO.Socket socket;
+  final TextEditingController _textController = TextEditingController();
   List<Message> messages = [];
+  bool _hasText = false;
 
   @override
   void initState() {
     super.initState();
+    _textController.addListener(_onTextChanged);
+    messages = [
+      Message(
+          type: 'source',
+          msg:
+              'Hey there! How are you? Hey there! How are you? Hey there! How are you? Hey there! How are you? Hey there! How are you? Hey there! How are you? Hey there! How are you? ',
+          time: '11:30',
+          status: MessageStatus.seen),
+      Message(
+          type: 'destination',
+          msg: 'I am good, thanks! How about you?',
+          time: '11:31'),
+      Message(
+          type: 'source',
+          msg: 'Doing well, just working on a Flutter app.',
+          time: '11:32',
+          status: MessageStatus.sent),
+    ];
   }
 
   void socketConnection() {
@@ -47,12 +67,26 @@ class _ConversationState extends State<Conversation> {
     Message messageModel = Message(
         type: type,
         msg: message,
-        time: DateTime.now().toString().substring(10, 16));
+        time: DateTime.now().toString().substring(10, 16),
+        status: MessageStatus.sent);
     print(messages);
 
     setState(() {
       messages.add(messageModel);
     });
+  }
+
+  void _onTextChanged() {
+    setState(() {
+      _hasText = _textController.text.trim().isNotEmpty;
+    });
+  }
+
+  @override
+  void dispose() {
+    _textController.removeListener(_onTextChanged);
+    _textController.dispose();
+    super.dispose();
   }
 
   @override
@@ -121,62 +155,105 @@ class _ConversationState extends State<Conversation> {
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: MyMessage(),
-            ),
-          ),
-        ),
-      ),
-      persistentFooterButtons: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Icon(
-              Icons.add,
-              color: AppColors.blue,
-            ),
-            SizedBox(
-              width: ScreenSize.width / 1.5,
-              child: TextField(
-                decoration: InputDecoration(
-                  isDense: true,
-                  contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(50)),
-                  hintText: 'Enter text',
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      Icons.image,
-                      size: 30,
-                      color: AppColors.blue,
-                    ),
-                    onPressed: () {
-                      // Define the action to perform
+          child: Column(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 12.0),
+                  child: ListView.separated(
+                    reverse: true,
+                    itemCount: messages.length,
+                    separatorBuilder: (context, index) => SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      final message = messages[messages.length - 1 - index];
+                      final isSender =
+                          message.type.toLowerCase().contains('source');
+                      return ChatBubble(
+                        message: message.msg,
+                        time: message.time,
+                        isSender: isSender,
+                        status: message.status,
+                      );
                     },
                   ),
                 ),
               ),
-            ),
-            SvgPicture.asset(
-              'assets/icons/Icone=Camera outline.svg',
-              semanticsLabel: 'Logo',
-              color: AppColors.blue,
-              height: 30.0,
-              width: 30.0,
-            ),
-            SvgPicture.asset(
-              'assets/icons/Icone=Mic.svg',
-              semanticsLabel: 'Logo',
-              color: AppColors.blue,
-              height: 30.0,
-              width: 30.0,
-            ),
-          ],
-        )
-      ],
+              Container(
+                color: Colors.white.withOpacity(0.8),
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: Row(
+                  children: [
+                    InkWell(
+                      onTap: () {},
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.blue,
+                          shape: BoxShape.circle,
+                        ),
+                        padding: EdgeInsets.all(10),
+                        child: Icon(Icons.add, color: Colors.white, size: 20),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                        child: Row(
+                          children: [
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: TextField(
+                                controller: _textController,
+                                decoration: InputDecoration(
+                                  hintText: 'Type a message',
+                                  border: InputBorder.none,
+                                ),
+                                onSubmitted: (value) {
+                                  if (value.trim().isNotEmpty) {
+                                    setMessage('source', value.trim());
+                                    _textController.clear();
+                                  }
+                                },
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.image, color: AppColors.blue),
+                              onPressed: () {},
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.blue,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: Icon(_hasText ? Icons.send : Icons.mic,
+                            color: Colors.white),
+                        onPressed: () {
+                          if (_hasText) {
+                            final text = _textController.text.trim();
+                            setMessage('source', text);
+                            _textController.clear();
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
