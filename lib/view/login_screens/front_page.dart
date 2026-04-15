@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FrontPage extends ConsumerWidget {
+class FrontPage extends ConsumerStatefulWidget {
   const FrontPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<FrontPage> createState() => _FrontPageState();
+}
+
+class _FrontPageState extends ConsumerState<FrontPage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, '/language');
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
       child: Column(

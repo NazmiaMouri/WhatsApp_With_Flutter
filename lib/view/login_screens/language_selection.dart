@@ -7,7 +7,7 @@ class LanguageSelection extends ConsumerStatefulWidget {
   const LanguageSelection({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
+  ConsumerState<LanguageSelection> createState() =>
       _LanguageSelectionState();
 }
 
@@ -118,7 +118,9 @@ class _LanguageSelectionState extends ConsumerState<LanguageSelection> {
             Icons.arrow_forward,
             color: Colors.white,
           ),
-          onPressed: () => {}),
+          onPressed: () => {
+            Navigator.pushNamed(context, '/contact')
+          }),
     );
   }
 }

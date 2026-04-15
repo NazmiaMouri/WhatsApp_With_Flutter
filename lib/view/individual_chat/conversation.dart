@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:whats_app/constants/colors.dart';
 import 'package:whats_app/constants/screen_size.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -24,6 +27,8 @@ class _ConversationState extends State<Conversation> {
   void initState() {
     super.initState();
     _textController.addListener(_onTextChanged);
+    socketConnection();
+
     messages = [
       Message(
           type: 'source',
@@ -44,23 +49,35 @@ class _ConversationState extends State<Conversation> {
   }
 
   void socketConnection() {
-    socket = IO.io("http://192.168.0.218:5000", <String, dynamic>{
-      "transports": ["websocket"],
-      "autoConnect": false,
+    final backendHost = Platform.isAndroid
+        ? 'http://10.0.2.2:5000'
+        : 'http://192.168.0.218:5000';
+
+    socket = IO.io(backendHost, <String, dynamic>{
+      'transports': ['websocket'],
+      'autoConnect': false,
     });
+
+    print('Connecting to socket at $backendHost...');
     socket.connect();
-    socket.emit("signin");
-    socket.onConnect((data) {
-      socket.on("message", (msg) {
-        setMessage("desitation", msg["message"]);
-      });
+    print(socket.connected);
+    socket.onConnect((_) {
+      print('connected');
+      socket.emit('signin');
+      // socket.on('message', (msg) {
+      //   print(msg);
+      //   setMessage('destination', msg['message']);
+      // });
     });
+    socket.onConnectError((data) => print('connect error: $data'));
+    socket.onError((data) => print('socket error: $data'));
+    socket.onDisconnect((reason) => print('disconnected: $reason'));
   }
 
-  void sendMessage(String message, int sourceId, int targetId) {
+  void sendMessage(String message, String type) {
     // setMessage("source", message);
     socket.emit("message",
-        {"message": message, "sourceId": sourceId, "targetId": targetId});
+        {"message": message, "type": type, "time": DateFormat('HH:mm').format(DateTime.now())});
   }
 
   void setMessage(String type, String message) {
@@ -69,6 +86,7 @@ class _ConversationState extends State<Conversation> {
         msg: message,
         time: DateTime.now().toString().substring(10, 16),
         status: MessageStatus.sent);
+        sendMessage(message,type);
     print(messages);
 
     setState(() {

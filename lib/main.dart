@@ -25,11 +25,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       // home: const Conversation(),
-      initialRoute: '/home',
+      initialRoute: '/startup',
       routes: {
         '/startup': (context) => FrontPage(),
         '/language': (context) => LanguageSelection(),
-        '/contact': (context) => PhoneNumber(),
+        '/contact': (context) => BaseScreen(child: PhoneNumber()),
         '/home': (context) => Home(),
         '/individualChat': (context) => Conversation(),
       },
