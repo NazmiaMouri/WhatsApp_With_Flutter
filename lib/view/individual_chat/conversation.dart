@@ -6,28 +6,39 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:whats_app/constants/colors.dart';
 import 'package:whats_app/constants/screen_size.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:whats_app/models/message_model.dart';
+import 'package:whats_app/providers/call_controller_provider.dart';
+import 'package:whats_app/providers/socket_provider.dart';
+import 'package:whats_app/services/socket_service.dart';
+import 'package:whats_app/services/webrtc_service.dart';
 import 'package:whats_app/view/individual_chat/my_message.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Conversation extends StatefulWidget {
+class Conversation extends ConsumerStatefulWidget {
   const Conversation({super.key});
 
   @override
-  State<Conversation> createState() => _ConversationState();
+  ConsumerState<Conversation> createState() => _ConversationState();
 }
 
-class _ConversationState extends State<Conversation> {
-  late IO.Socket socket;
+class _ConversationState extends ConsumerState<Conversation> {
+  late final socketService;
+  late final webRTCService;
+
   final TextEditingController _textController = TextEditingController();
   List<Message> messages = [];
   bool _hasText = false;
 
   @override
   void initState() {
+    socketService = ref.read(socketServiceProvider);
+    webRTCService = ref.read(webRTCServiceProvider);
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(callControllerProvider);
+    });
     _textController.addListener(_onTextChanged);
-    socketConnection();
+    socketService.socketConnection();
 
     messages = [
       Message(
@@ -48,36 +59,9 @@ class _ConversationState extends State<Conversation> {
     ];
   }
 
-  void socketConnection() {
-    final backendHost = Platform.isAndroid
-        ? 'http://10.0.2.2:5000'
-        : 'http://192.168.0.218:5000';
-
-    socket = IO.io(backendHost, <String, dynamic>{
-      'transports': ['websocket'],
-      'autoConnect': false,
-    });
-
-    print('Connecting to socket at $backendHost...');
-    socket.connect();
-    print(socket.connected);
-    socket.onConnect((_) {
-      print('connected');
-      socket.emit('signin');
-      // socket.on('message', (msg) {
-      //   print(msg);
-      //   setMessage('destination', msg['message']);
-      // });
-    });
-    socket.onConnectError((data) => print('connect error: $data'));
-    socket.onError((data) => print('socket error: $data'));
-    socket.onDisconnect((reason) => print('disconnected: $reason'));
-  }
-
-  void sendMessage(String message, String type) {
-    // setMessage("source", message);
-    socket.emit("message",
-        {"message": message, "type": type, "time": DateFormat('HH:mm').format(DateTime.now())});
+  Future<void> startCall() async {
+    await webRTCService.initialize();
+    socketService.joinCall('call-123');
   }
 
   void setMessage(String type, String message) {
@@ -86,7 +70,7 @@ class _ConversationState extends State<Conversation> {
         msg: message,
         time: DateTime.now().toString().substring(10, 16),
         status: MessageStatus.sent);
-        sendMessage(message,type);
+    socketService.joinConversation(message, type, 'conversation-123');
     print(messages);
 
     setState(() {
@@ -139,20 +123,26 @@ class _ConversationState extends State<Conversation> {
           Padding(
             padding: const EdgeInsets.all(5.0),
             child: InkWell(
+                onTap: () {
+                  startCall();
+                },
                 child: Icon(
-              Icons.videocam_outlined,
-              size: 40,
-              color: AppColors.blue,
-            )),
+                  Icons.videocam_outlined,
+                  size: 40,
+                  color: AppColors.blue,
+                )),
           ),
           Padding(
             padding: const EdgeInsets.all(5.0),
             child: InkWell(
+                onTap: () {
+                  startCall();
+                },
                 child: Icon(
-              Icons.phone_outlined,
-              size: 30,
-              color: AppColors.blue,
-            )),
+                  Icons.phone_outlined,
+                  size: 30,
+                  color: AppColors.blue,
+                )),
           ),
           Padding(
             padding: const EdgeInsets.all(5.0),

@@ -55,6 +55,12 @@ final List<Map<String, String>> languages = [
     'dialingCode': '+81',
   },
   {
+    'name': 'Bangladesh',
+    'isoAlpha2': 'BD',
+    'isoAlpha3': 'BGD',
+    'dialingCode': '+880',
+  },
+  {
     'name': 'Brazil',
     'isoAlpha2': 'BR',
     'isoAlpha3': 'BRA',

@@ -1,15 +1,3 @@
-buildscript {
-    ext.kotlin_version = '1.7.10'
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 allprojects {
     repositories {
         google()
@@ -23,6 +11,18 @@ subprojects {
 }
 subprojects {
     project.evaluationDependsOn(':app')
+}
+
+// country_codes 3.3.0 hard-codes compileSdkVersion 31. Override it here so
+// the plugin can use AndroidX dependencies that require API 34 or newer.
+subprojects { project ->
+    if (project.name == 'country_codes') {
+        afterEvaluate {
+            if (project.extensions.findByName('android') != null) {
+                project.android.compileSdkVersion 36
+            }
+        }
+    }
 }
 
 tasks.register("clean", Delete) {
