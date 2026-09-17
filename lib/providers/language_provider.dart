@@ -1,17 +1,12 @@
- import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final List<Map<String, String>> languages = [
-    {'name': 'English', 'subtitle': "(phone's language)"},
-    {'name': 'हिन्दी', 'subtitle': 'Hindi'},
-    {'name': 'मराठी', 'subtitle': 'Marathi'},
-    {'name': 'ગુજરાતી', 'subtitle': 'Gujarati'},
-    {'name': 'தமிழ்', 'subtitle': 'Tamil'},
-    {'name': 'বাংলা', 'subtitle': 'Bengali'},
-    {'name': 'తెలుగు', 'subtitle': 'Telugu'},
-    {'name': 'ಕನ್ನಡ', 'subtitle': 'Kannada'},
-  ];
+  {'name': 'English', 'subtitle': "(phone's language)", 'languageCode': 'en'},
+  {'name': 'বাংলা', 'subtitle': 'Bengali', 'languageCode': 'bn'},
+];
 
-  final List<Map<String, String>> countries = [
+final List<Map<String, String>> countries = [
   {
     'name': 'United States',
     'isoAlpha2': 'US',
@@ -80,6 +75,8 @@ final List<Map<String, String>> languages = [
   },
 ];
 
-  final languageProvider = Provider((_) => languages);
+final languageProvider = Provider((_) => languages);
 
-  final countryProvider = Provider((_)=> countries);
+final countryProvider = Provider((_) => countries);
+
+final localeProvider = StateProvider<Locale>((ref) =>  Locale(languages[0]['languageCode']!));

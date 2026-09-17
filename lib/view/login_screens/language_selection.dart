@@ -7,8 +7,7 @@ class LanguageSelection extends ConsumerStatefulWidget {
   const LanguageSelection({super.key});
 
   @override
-  ConsumerState<LanguageSelection> createState() =>
-      _LanguageSelectionState();
+  ConsumerState<LanguageSelection> createState() => _LanguageSelectionState();
 }
 
 class _LanguageSelectionState extends ConsumerState<LanguageSelection> {
@@ -95,6 +94,8 @@ class _LanguageSelectionState extends ConsumerState<LanguageSelection> {
                             groupValue:
                                 selectedLanguage, // Use _selectedValue to track the selected option
                             onChanged: (value) {
+                              ref.read(localeProvider.notifier).state =
+                                  Locale(languageList[index]['languageCode']!);
                               setState(() {
                                 selectedLanguage =
                                     value!; // Update _selectedValue when option 2 is selected
@@ -118,9 +119,7 @@ class _LanguageSelectionState extends ConsumerState<LanguageSelection> {
             Icons.arrow_forward,
             color: Colors.white,
           ),
-          onPressed: () => {
-            Navigator.pushNamed(context, '/contact')
-          }),
+          onPressed: () => {Navigator.pushNamed(context, '/contact')}),
     );
   }
 }

@@ -1,38 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:whats_app/base_screen.dart';
 import 'package:whats_app/constants/screen_size.dart';
+import 'package:whats_app/providers/language_provider.dart';
 import 'package:whats_app/view/home_screens/home.dart';
 import 'package:whats_app/view/individual_chat/conversation.dart';
 import 'package:whats_app/view/individual_chat/my_message.dart';
+import 'package:whats_app/view/individual_chat/video_call.dart';
 import 'package:whats_app/view/login_screens/front_page.dart';
 import 'package:whats_app/view/login_screens/language_selection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whats_app/view/login_screens/phone_number.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart';
 
 void main() {
   runApp(ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final locale = ref.watch(localeProvider);
     ScreenSize.width = MediaQuery.of(context).size.width;
     ScreenSize.height = MediaQuery.of(context).size.height;
 
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      // home: const Conversation(),
-      initialRoute: '/startup',
-      routes: {
-        '/startup': (context) => FrontPage(),
-        '/language': (context) => LanguageSelection(),
-        '/contact': (context) => BaseScreen(child: PhoneNumber()),
-        '/home': (context) => Home(),
-        '/individualChat': (context) => Conversation(),
-      },
-    );
+        debugShowCheckedModeBanner: false,
+
+        locale: locale,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'),
+          Locale('bn'),
+        ],
+        // home: const Conversation(),
+        initialRoute: '/startup',
+        routes: {
+          '/startup': (context) => FrontPage(),
+          '/language': (context) => LanguageSelection(),
+          '/contact': (context) => BaseScreen(child: PhoneNumber()),
+          '/home': (context) => Home(),
+          '/individualChat': (context) => Conversation(),
+          '/videoCall': (context) {
+            final callId = ModalRoute.of(context)!.settings.arguments as String;
+
+            return VideoCall(
+              callId: callId,
+            );
+          },
+        });
   }
 }

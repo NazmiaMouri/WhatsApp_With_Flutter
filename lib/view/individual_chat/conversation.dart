@@ -13,6 +13,7 @@ import 'package:whats_app/services/socket_service.dart';
 import 'package:whats_app/services/webrtc_service.dart';
 import 'package:whats_app/view/individual_chat/my_message.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:whats_app/view/individual_chat/video_call.dart';
 
 class Conversation extends ConsumerStatefulWidget {
   const Conversation({super.key});
@@ -57,11 +58,6 @@ class _ConversationState extends ConsumerState<Conversation> {
           time: '11:32',
           status: MessageStatus.sent),
     ];
-  }
-
-  Future<void> startCall() async {
-    await webRTCService.initialize();
-    socketService.joinCall('call-123');
   }
 
   void setMessage(String type, String message) {
@@ -124,7 +120,11 @@ class _ConversationState extends ConsumerState<Conversation> {
             padding: const EdgeInsets.all(5.0),
             child: InkWell(
                 onTap: () {
-                  startCall();
+                  Navigator.pushNamed(
+                    context,
+                    '/videoCall',
+                    arguments: 'callId-123', // Replace with the actual callId you want to pass
+                  );
                 },
                 child: Icon(
                   Icons.videocam_outlined,
@@ -136,7 +136,7 @@ class _ConversationState extends ConsumerState<Conversation> {
             padding: const EdgeInsets.all(5.0),
             child: InkWell(
                 onTap: () {
-                  startCall();
+                  //
                 },
                 child: Icon(
                   Icons.phone_outlined,

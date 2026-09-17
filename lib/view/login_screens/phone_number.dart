@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whats_app/constants/colors.dart';
+import 'package:whats_app/l10n/app_localizations.dart';
 import 'package:whats_app/providers/language_provider.dart';
 import 'package:country_codes/country_codes.dart';
 
@@ -83,13 +84,13 @@ class _PhoneNumberState extends ConsumerState<PhoneNumber> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              'Enter your phone number',
+             Text(
+               AppLocalizations.of(context)!.enteryourphonenumber,
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             Text(
-              'WhatsApp will need to verify your phone number.',
+              AppLocalizations.of(context)!.verifyPhoneNumber,
               style: TextStyle(fontSize: 16, color: Colors.grey[700]),
             ),
             RichText(

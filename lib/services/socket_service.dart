@@ -28,6 +28,16 @@ class SocketService {
     socket.onDisconnect((reason) => print('disconnected: $reason'));
   }
 
+  void startCall({required String receiverId,
+  required String callId, required String callType}){
+
+    socket.emit('start-call',{
+      'receiverId': receiverId,
+      'callId': callId,
+      'callType': callType, 
+    });
+  }
+
   void joinCall(String callId) {
     socket.emit('join-call', {
       callId: callId,

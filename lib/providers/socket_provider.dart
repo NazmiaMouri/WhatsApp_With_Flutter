@@ -18,5 +18,5 @@ final socketServiceProvider=Provider<SocketService>((ref) {
 final webRTCServiceProvider = Provider<WebRTCService>((ref) {
 
   final socketService = ref.watch(socketServiceProvider);
-  return WebRTCService(socketService.socket);
+  return WebRTCService(socketService.socket, );
 });
